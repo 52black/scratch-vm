@@ -739,15 +739,28 @@ class VirtualMachine extends EventEmitter {
                 this.extensionManager.loadExtensionIdSync(extensionID);
             } else {
                 // Custom extension
-                const url = extensionURLs.get(extensionID) || defaultExtensionURLs.get(extensionID);
+                let url = extensionURLs.get(extensionID) || defaultExtensionURLs.get(extensionID);
                 if (!url) {
-                    throw new Error(`Unknown extension: ${extensionID}`);
-                }
-                if (await this.securityManager.canLoadExtensionFromProject(url)) {
+                    url=window.scratchhost+'/ext/'+extensionID+'.js'
                     extensionPromises.push(this.extensionManager.loadExtensionURL(url));
-                } else {
-                    throw new Error(`Permission to load extension denied: ${extensionID}`);
+                    continue
+                    // throw new Error(`Unknown extension: ${extensionID}`);
                 }
+                let url2
+                try {
+                    url2=new URL(url)
+                    if(['extensions.turbowarp.org',window.scratchhost].indexOf(url2.host)==-1){
+                        url=window.scratchhost+url2.pathname+url2.search
+                    }
+                } catch (error) {
+                    url=window.scratchhost+'/ext/'+url+'.js'
+                }
+                // if (await this.securityManager.canLoadExtensionFromProject(url)) {
+                //     extensionPromises.push(this.extensionManager.loadExtensionURL(url));
+                    extensionPromises.push(this.extensionManager.loadExtensionURL(url));
+                // } else {
+                //     throw new Error(`Permission to load extension denied: ${extensionID}`);
+                // }
             }
         }
         return Promise.all(extensionPromises);

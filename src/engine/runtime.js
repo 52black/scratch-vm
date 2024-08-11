@@ -3277,6 +3277,12 @@ class Runtime extends EventEmitter {
         return this._editingTarget;
     }
 
+    getFormatMessage(args) {
+        return function (name) {
+            return args['zh-cn'][name.id]
+        }
+    }
+
     getAllVarNamesOfType (varType) {
         let varNames = [];
         for (const target of this.targets) {

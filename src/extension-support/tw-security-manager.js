@@ -35,6 +35,9 @@ class SecurityManager {
      */
     getSandboxMode (extensionURL) {
         // Default to worker for Scratch compatibility
+        // if (extensionURL.startsWith(window.scratchhost)) {
+        //     return Promise.resolve("unsandboxed");
+        // }
         return Promise.resolve('worker');
     }
 
@@ -47,7 +50,7 @@ class SecurityManager {
      */
     canLoadExtensionFromProject (extensionURL) {
         // Default to false for security
-        return Promise.resolve(false);
+        return Promise.resolve(true);
     }
 
     /**
