@@ -156,7 +156,13 @@ const executeInCompatibilityLayer = function*(inputs, blockFunction, isWarp, use
         return blockFunction(inputs, blockUtility);
     };
 
-    let returnValue = executeBlock();
+    let returnValue;
+    try{
+        returnValue = executeBlock();
+    }catch(e){
+        console.error(e)
+        returnValue=""
+    }
     if (isPromise(returnValue)) {
         returnValue = finish(yield* waitPromise(returnValue));
         if (useFlags) hasResumedFromPromise = true;
