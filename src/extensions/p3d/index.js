@@ -2,7 +2,7 @@ const formatMessage = require('format-message');
 const BlockType = require('../../extension-support/block-type');
 const ArgumentType = require('../../extension-support/argument-type');
 const Cast = require('../../util/cast');
-const cannon = require('cannon')
+const cannon = require('./cannon.js')
 const CANNON = cannon
 
 
