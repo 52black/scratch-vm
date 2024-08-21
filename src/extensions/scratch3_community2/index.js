@@ -97,7 +97,8 @@ class Scratch3CommunityBlocks {
                             type: ArgumentType.STRING,
                             defaultValue: '# 此介绍已被修改'
                         }
-                    }
+                    },
+                    hide:true
                 },
                 '弹窗',
                 {
@@ -345,8 +346,8 @@ class Scratch3CommunityBlocks {
                 },
             ],
             menus: {
-                USER_ATTR: ['id', 'nickname', 'head', 'signtime'],
-                WORK_ATTR: ['id', 'author', 'image', 'look', 'like', 'publish_time', 'time', 'update_time', 'nickname'],
+                USER_ATTR: ['id', {text:'昵称',value:'nickname'},{text:'头像',value: 'head'},{text:'注册时间',value:  'signtime'}],
+                WORK_ATTR: ['id', {text:'作者',value:'author'}, {text:'封面',value:'image'}, {text:'观看量',value:'look'}, {text:'点赞量',value:'like'}, {text:'发布时间',value:'publish_time'}, {text:'创建时间',value:'time'}, {text:'更新时间',value:'update_time'}, {text:'昵称',value:'nickname'}],
                 d: ['大写', '小写'],
                 time: ['标准', '时间戳'],
                 type: ['txt', '图片'],
@@ -422,18 +423,24 @@ class Scratch3CommunityBlocks {
         return b;
     }
     ale(url) {
-        mdui.alert(markdownToHtml(url.TEXT), markdownToHtml(url.title) || '');
+        mdui.alert({
+            headline: (url.TEXT),
+            description: (url.title) || '',
+            confirmText: "OK"
+          });
     }
     aleAndWait(url) {
-        return new Promise((resolve) => {
-            mdui.alert(markdownToHtml(url.TEXT), markdownToHtml(url.title) || '', () => {
-                resolve()
-            },{modal:true});
-        })
+        return mdui.alert({
+            headline: (url.TEXT),
+            description: (url.title) || '',
+            confirmText: "OK"
+          });
     }
     downloadFile({ url, name }) {
         if (!this.isValidUrl(url)) {
-            mdui.snackbar('不支持下载这个链接');
+            mdui.snackbar({
+                message: "不支持下载这个链接",
+              });
             return;
         }
         const a = document.createElement('a');
@@ -588,10 +595,10 @@ class Scratch3CommunityBlocks {
     choice(a) {
         return new Promise((resolve) => {
             mdui.dialog({
-                title: markdownToHtml(a.title),
-                content: markdownToHtml(a.TEXT),
+                headline: (a.title),
+                description: (a.TEXT),
                 modal:true,
-                buttons: [
+                actions: [
                     {
                         text: a.a,
                         onClick: function (inst) {
@@ -609,7 +616,10 @@ class Scratch3CommunityBlocks {
         })
     }
     al2(url) {
-        mdui.snackbar(markdownToHtml(url.TEXT));
+        // mdui.snackbar((url.TEXT));
+        mdui.snackbar({
+            message: url.TEXT,
+          });
     }
     js(url) {
         try {
@@ -681,7 +691,10 @@ class Scratch3CommunityBlocks {
         if (this.isValidUrl(args.URL)) {
             window.open(args.URL);
         } else {
-            mdui.alert("该指令块仅可打开40code编程社区");
+            mdui.alert({
+                headline: "该指令块仅可打开40code编程社区",
+                confirmText: "OK",
+              });
         }
     }
 
@@ -689,7 +702,10 @@ class Scratch3CommunityBlocks {
         if (this.isValidUrl(args.URL)) {
             top.location = args.URL;
         } else {
-            mdui.alert("该指令块仅可打开40code编程社区");
+            mdui.alert({
+                headline: "该指令块仅可打开40code编程社区",
+                confirmText: "OK",
+              });
         }
     }
     say(args, util) {
@@ -887,12 +903,12 @@ class Scratch3CommunityBlocks {
         return a.b.split(a.a)[a.c - 1];
     }
     setIntroduction(a) {
-        try {
-            top.v.workview.introduce2 = top.markdownToHtml(a.text.slice(0, 1000))
-        } catch (e) {
-            mdui.snackbar("修改介绍(创作页提示)：" + markdownToHtml(a.text))
-            console.log(e)
-        }
+        // try {
+        //     top.v.workview.introduce = a.text.slice(0, 1000)
+        // } catch (e) {
+        //     mdui.snackbar("修改介绍(创作页提示)：" + (a.text))
+        //     console.log(e)
+        // }
     }
     ismobile() {
         return navigator.userAgentData.mobile

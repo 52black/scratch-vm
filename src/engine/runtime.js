@@ -1158,7 +1158,7 @@ class Runtime extends EventEmitter {
 
         for (const blockInfo of extensionInfo.blocks) {
             try {
-                const convertedBlock = this._convertForScratchBlocks(blockInfo, categoryInfo);
+                const convertedBlock = this._convertForScratchBlocks(blockInfo, categoryInfo, extensionInfo.hide);
                 categoryInfo.blocks.push(convertedBlock);
                 if (convertedBlock.json) {
                     const opcode = convertedBlock.json.type;
@@ -1306,12 +1306,12 @@ class Runtime extends EventEmitter {
      * @returns {ConvertedBlockInfo} - the converted & original block information
      * @private
      */
-    _convertForScratchBlocks (blockInfo, categoryInfo) {
+    _convertForScratchBlocks (blockInfo, categoryInfo,hide) {
         if (blockInfo === '---') {
             return this._convertSeparatorForScratchBlocks(blockInfo);
         }
 
-        if (blockInfo.blockType === BlockType.LABEL) {
+        if (blockInfo.blockType === BlockType.LABEL || typeof blockInfo === 'string') {
             return this._convertLabelForScratchBlocks(blockInfo);
         }
 
@@ -1323,7 +1323,7 @@ class Runtime extends EventEmitter {
             return this._convertXmlForScratchBlocks(blockInfo);
         }
 
-        return this._convertBlockForScratchBlocks(blockInfo, categoryInfo);
+        return this._convertBlockForScratchBlocks(blockInfo, categoryInfo,hide);
     }
 
     /**
@@ -1333,7 +1333,7 @@ class Runtime extends EventEmitter {
      * @returns {ConvertedBlockInfo} - the converted & original block information
      * @private
      */
-    _convertBlockForScratchBlocks (blockInfo, categoryInfo) {
+    _convertBlockForScratchBlocks (blockInfo, categoryInfo,hide) {
         const extendedOpcode = `${categoryInfo.id}_${blockInfo.opcode}`;
 
         const blockJSON = {
@@ -1487,7 +1487,7 @@ class Runtime extends EventEmitter {
 
         const mutation = blockInfo.isDynamic ? `<mutation blockInfo="${xmlEscape(JSON.stringify(blockInfo))}"/>` : '';
         const inputs = context.inputList.join('');
-        const blockXML = `<block type="${xmlEscape(extendedOpcode)}">${mutation}${inputs}</block>`;
+        const blockXML = blockInfo.hide || hide?'':`<block type="${xmlEscape(extendedOpcode)}">${mutation}${inputs}</block>`;
 
         if (blockInfo.extensions) {
             for (const extension of blockInfo.extensions) {
@@ -1527,7 +1527,7 @@ class Runtime extends EventEmitter {
     _convertLabelForScratchBlocks (blockInfo) {
         return {
             info: blockInfo,
-            xml: `<label text="${xmlEscape(blockInfo.text)}"></label>`
+            xml: `<label text="${xmlEscape(blockInfo.text || blockInfo)}"></label>`
         };
     }
     

@@ -233,6 +233,8 @@ class ExtensionManager {
             throw new Error(`Invalid extension URL: ${extensionURL}`);
         }
 
+        console.log(extensionURL)
+
         this.runtime.setExternalCommunicationMethod('customExtensions', true);
 
         this.loadingAsyncExtensions++;
